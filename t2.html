@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="mb-3">
+                <label for="formGroupExampleInput" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Example input placeholder">
+            </div>
+            <div class="mb-3">
+                <label for="formGroupExampleInput2" class="form-label">Email</label>
+                <input type="text" class="form-control" id="email" placeholder="Another input placeholder">
+            </div>
+            Gender:
+            <div class="form-check">
+
+                <input class="form-check-input" type="radio" name="gender" id="male">
+                <label class="form-check-label" for="flexRadioDefault1">
+                    male
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="gender" id="female" checked>
+                <label class="form-check-label" for="flexRadioDefault2">
+                    female
+                </label>
+            </div>
+            Status:
+            <div class="form-check">
+
+                <input class="form-check-input" type="radio" name="action" id="active">
+                <label class="form-check-label" for="flexRadioDefault1">
+                    Active
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="action" id="inactive" checked>
+                <label class="form-check-label" for="flexRadioDefault2">
+                    Inactive
+                </label>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="post()">submit</button>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="del()">delete</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <table id="tab" class="table">
+
+    </table>
+
+
+    <script>
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer 960142cf8a710dabffe18857954d25ba176debc0ad31096da2eee83eb8447aae");
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch("https://gorest.co.in/public/v2/users", requestOptions)
+            .then(response => response.text())
+            .then(async (result) => await (call(result)))
+            .catch(error => console.log('error', error));
+
+
+        function call(data) {
+            console.log(typeof data)
+            var array = JSON.parse(data)
+            console.log(array)
+            res = "<tr><th>ID</th><th>name</th><th>email</th><th>gender</th><th>status</th></tr>"
+            for (var i = 0; i < array.length; i++) {
+                res += "<tr><td>" + array[i].id + "</td><td>" + array[i].name + "</td><td>" + array[i].email + "</td><td>" + array[i].gender + "</td><td>" + array[i].status + "</td></tr>"
+            }
+            document.getElementById('tab').innerHTML = res
+
+        }
+
+        function post() {
+            var x = document.getElementById('name').value;
+            var y = document.getElementById('email').value;
+            var z;
+            var w;
+            if (document.getElementById('male').checked == true) {
+                var z = "male"
+            }
+            else {
+                var z = "female"
+            }
+            if (document.getElementById('active').checked == true) {
+                var w = "Active"
+            }
+            else {
+                var w = "Inactive"
+            }
+
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", "Bearer 960142cf8a710dabffe18857954d25ba176debc0ad31096da2eee83eb8447aae");
+            myHeaders.append("Content-Type", "application/json");
+
+            var raw = JSON.stringify({
+
+                "name": x,
+                "email": y,
+                "gender": z,
+                "status": w
+            });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch("https://gorest.co.in/public/v2/users", requestOptions)
+                .then(response => response.text())
+                .then(async (result) => await (call(result)))
+                .catch(error => console.log('error', error));
+
+        }
+
+        function del() {
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", "Bearer 960142cf8a710dabffe18857954d25ba176debc0ad31096da2eee83eb8447aae");
+
+            var raw = "";
+
+            var requestOptions = {
+                method: 'DELETE',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch("https://gorest.co.in/public/v2/users/972242", requestOptions)
+                .then(response => response.text())
+                .then(async (result) => await (call(result)))
+                .catch(error => console.log('error', error));
+        }
+
+    </script>
+</body>
+
+</html>
